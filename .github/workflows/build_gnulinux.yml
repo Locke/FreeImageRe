@@ -1,0 +1,26 @@
+name: Build GNU/Linux
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: meson nasm
+          version: 1.0 # increment when changing packages
+      - name: cmake
+        run: mkdir build && cd build && cmake ..
+      - name: make
+        run: cd build && make
