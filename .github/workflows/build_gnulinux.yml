@@ -13,13 +13,18 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
+            gcc: 10
+          - os: ubuntu-latest
+            gcc: 13
+
+    env:
+      CC: gcc-${{ matrix.gcc }}
+      CXX: g++-${{ matrix.gcc }}
 
     steps:
       - uses: actions/checkout@v6
-      - uses: awalsh128/cache-apt-pkgs-action@v1
-        with:
-          packages: meson nasm
-          version: 1.0 # increment when changing packages
+      - name: install build dependencies
+        run: sudo apt install -y meson nasm gcc-${{ matrix.gcc }} g++-${{ matrix.gcc }}
       - name: cmake
         run: mkdir build && cd build && cmake ..
       - name: make
